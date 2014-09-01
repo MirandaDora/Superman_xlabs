@@ -1,0 +1,99 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"><html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<title>Simple First Person Camera</title>
+
+  <!-- *** Replace the key below below with your own API key, available at http://code.google.com/apis/maps/signup.html *** -->
+  <!--for menus:-->
+  <link rel="stylesheet" href="menu/styles.css">
+   <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
+   <script src="menu/script.js"></script>
+   
+   <!--google maps-->
+  <script src="http://www.google.com/jsapi?key=ABQIAAAAwbkbZLyhsmTCWXbTcjbgbRSzHs7K5SvaUdm8ua-Xxy_-2dYwMxQMhnagaawTo7L1FE1-amhuQxIlXw"></script>
+  <script type="text/javascript" src="math3d.js"></script>
+  <script type="text/javascript" src="keyboard.js"></script>
+  <script type="text/javascript" src="cam.js"></script>
+  <script type="text/javascript">
+google.load("earth", "1");
+google.load("maps", "2");
+
+var ge = null;
+var cam;
+
+function init() {
+  init3D();
+}
+
+function initCB(object) {
+  ge = object;
+  ge.getOptions().setFlyToSpeed(100);
+
+  ge.getLayerRoot().enableLayerById(ge.LAYER_BUILDINGS, true);
+
+  cam = new FirstPersonCam();
+  cam.updateCamera();
+  ge.getWindow().setVisibility(true);
+
+  keyboardFocusHack(ge);
+}
+
+function failureCB(object) {
+  /***
+   * This function will be called if plugin fails to load, in case
+   * you need to handle that error condition.
+   ***/
+}
+
+function init3D() {
+  google.earth.createInstance("map3d", initCB, failureCB);
+}
+
+  </script>
+<style type="text/css">
+body {
+	background-color:#141414;
+}
+
+
+</style>
+<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body onload='init()' onunload="GUnload()" onKeyDown="return keyDown(event);" onKeyUp="return keyUp(event);" id='body'>
+
+<table width="100%" border="0" >
+  <tr bgcolor="#0C0C0C">
+    <td align="left" valign="top">
+    <div id='cssmenu'>
+<ul>
+   <li><a href='index.html'><span>Home</span></a></li>
+   <li class='has-sub'><a href='#'><span>Control</span></a>
+        <ul>
+            <li><a href='#'><span>Left and Right<br><img src="images/left_to_right.png" width="110" ><br>
+            </span></a></li>
+              <li><a href='#'><span>Up and Down<br><img src="images/Pitch.png" width="110" ></span></a></li>
+               <li class='last'><a href='#'><span>Forward<br><img src="images/closer.png" width="110" ></span></a></li>
+               <li class='last'><a href='#'><span>Exit<br><img src="images/spacebar.png" width="110" ></span></a></li>
+            </ul>
+         </li>
+         <li class='active'><a href='demo.html'><span>Play</span></a></li>
+   <li class='last'><a href='contact.html'><span>Contact</span></a></li>
+</ul>
+</div>
+    </td>
+    <td align="left" valign="top"><div id='map3d'></div>   </td>
+  </tr>
+</table>
+
+   
+
+</body>
+<script language="javascript">
+document.getElementById("map3d").style.width=document.body.clientWidth-130+"px";
+document.getElementById("map3d").style.height=document.body.clientHeight+"px";
+
+
+</script>
+</html>

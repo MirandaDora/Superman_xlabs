@@ -1,0 +1,157 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Untitled Document</title>
+</head>
+<link href="bootstrap.min.css" rel="stylesheet">
+ <link rel="stylesheet" href="menu/styles.css">
+   <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
+   <script src="menu/script.js"></script>
+    <!-- Custom styles for this template -->
+    <link href="justified-nav.css" rel="stylesheet">
+<body>
+<table width="100%" border="0" >
+  <tr bgcolor="#0C0C0C">
+    <td align="left" valign="top">
+    <div id='cssmenu'>
+<ul>
+   <li><a href='#'><span>Home</span></a></li>
+   <li class='active has-sub'><a href='#'><span>Control</span></a>
+        <ul>
+            <li><a href='#'><span>Left and Right<br><img src="images/left_to_right.png" width="110" ><br>
+            </span></a></li>
+              <li><a href='#'><span>Up and Down<br><img src="images/Pitch.png" width="110" ></span></a></li>
+               <li class='last'><a href='#'><span>Forward<br><img src="images/closer.png" width="110" ></span></a></li>
+               <li class='last'><a href='#'><span>Exit<br><img src="images/spacebar.png" width="110" ></span></a></li>
+            </ul>
+         </li>
+   <li><a href='check.html'><span>Check</span></a></li>
+   <li class='last'><a href='#'><span>Contact</span></a></li>
+</ul>
+</div>
+    </td>
+    <td align="left" valign="top"><p><img src="images/gun.png" id="gun" style="position:fixed; z-index:10; opacity:0.7"/>
+  <img src="images/balloon.png" width="68" id="balloon" style="position:fixed; z-index:0; opacity:0.9" /></p>
+   <div class="container">
+        <div class="row">
+        <div class="col-lg-4">
+          <h2>1. xLabs Installation</h2>
+          <li>Can you control the circle by moving your heads?
+    <blockquote>
+      <p>If you can't, xLabs is not installed correctlly. Follow the link to reinstall:</p>
+    </blockquote>
+  </li>
+
+          <p><a class="btn btn-primary" href="www.xlabs.com.au" role="button">Install xLabs &raquo;</a></p>
+        </div>
+        
+        <div class="col-lg-4">
+          <h2>2. Calibration</h2>
+          <li><p>Can you aim at the balloon if you do not move your head?.</p></li>
+           <blockquote>
+      <p>If you can't, your camera's position is not right in front of your face, adjust your own position or the camera's position untill you can aim at the balloon comfortably..</p>
+          <p>&nbsp;</p>
+       </div>
+       <div class="col-lg-4">
+          <h2>3. All Done!</h2>
+          <li>You have xLabs installed correctly</li>
+          <li>You are sitting infront of the camera.</li>
+           <blockquote>
+      <p>Now you are ready to shoot the apples, get ready and click the button:</p>
+          <p><a class="btn btn-primary" href="game.html" role="button">Play &raquo;</a></p>
+       </div>
+     </div>   </td>
+  </tr>
+</table>
+  <!--end of nav-->
+
+
+      <!-- Site footer -->
+</div>
+    </div> 
+    <!-- /container -->
+</body>
+<script language="javascript">
+
+var sdkDemo = {
+	sx : -1,
+	sy : -1,
+	sz : -1,
+    documentOffsetX : 0, // offset of HTML document origin from screen origin
+    documentOffsetY : 0,
+
+    setup : function() {
+		var balloon=document.getElementById("balloon");
+	console.log(document.getElementById("balloon").width);
+     document.getElementById("balloon").style.left=Math.round(document.body.clientWidth/2-34)+"px";
+	 balloon.style.top=Math.round(document.documentElement.clientHeight/2-60)+"px";
+    },
+
+    onApiState : function( state ) {
+		
+    var x = state.kvHeadX;
+	var y = state.kvHeadY;
+	var z = state.kvHeadZ;
+		
+		var alpha = 0.6;
+			this.sx = x;
+			this.sy = y;
+		this.sz = z;
+	
+		this.sx = alpha * this.sx + (1-alpha) * x;
+		this.sy = alpha * this.sy + (1-alpha) * y;
+		this.sz = alpha * this.sz + (1-alpha) * z;
+
+		//drawGun(this.gun, this.sx, this.sy, this.gun.z, this.gun.length, Math.round(z*100));
+	var faceX=this.sx;
+	var faceY=this.sy;
+
+	
+	var scaleW=Math.floor((document.body.clientWidth/5000)*12);
+	var scaleH=Math.floor((document.documentElement.clientHeight/3000)*10);
+	var delta_fx=faceX;
+	var delta_fy=faceY;
+	var res_left;
+	var res_top;
+	if(delta_fx>=0){
+		//delta_fx>0, the head is moving to the left, so the left value should be reduced!
+	res_left=Math.abs(Math.abs(delta_fx*scaleW)*100-document.body.clientWidth/2);
+	}
+	else{
+		res_left=Math.abs(Math.abs(delta_fx*scaleW)*100+document.body.clientWidth/2);
+		}
+	if(delta_fy>=0){
+	res_top=Math.abs(Math.abs(delta_fy*scaleH)*100+document.body.clientHeight/2);}
+	else{
+		res_top=Math.abs(Math.abs(delta_fy*scaleH)*100-document.body.clientHeight/2);
+		}
+console.log(document.documentElement.clientHeight);
+	document.getElementById("gun").style.left=Math.round(res_left)+"px";
+	document.getElementById("gun").style.top=Math.round(res_top)+"px";
+    },
+	
+
+
+    onApiReady : function() {
+     window.postMessage( {target:"xLabs", payload:{overlayEnabled:0}}, "*" );
+    window.postMessage( {target:"xLabs", payload:{overlayMode:0}}, "*" );
+    window.postMessage( {target:"xLabs", payload:{clicksEnabled:0}}, "*" );
+    window.postMessage( {target:"xLabs", payload:{trackingEnabled:1}}, "*" );
+    window.postMessage( {target:"xLabs", payload:{trackMouse:0}}, "*" );
+    window.postMessage( {target:"xLabs", payload:{pinpointEnabled:0}}, "*" );
+    window.postMessage( {target:"xLabs", payload:{realtimeEnabled:1}}, "*" );
+    }
+  };
+
+  document.addEventListener( "xLabsApiReady", function() {
+    sdkDemo.onApiReady();
+  } );
+
+  document.addEventListener( "xLabsApiState", function( event ) {
+    sdkDemo.onApiState( event.detail );
+  } );
+  sdkDemo.setup();
+
+</script>
+</html>
