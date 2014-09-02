@@ -216,7 +216,7 @@ FirstPersonCam.prototype.updatePosition = function(dt) {
   }  
   var forward = 0;                             
   if (moveForward>0) {
-    var forwardVelocity = 60*moveForward;
+    var forwardVelocity = 80*moveForward;
     if (moveBackward>0)
       forwardVelocity *= -1;      
     forward = forwardVelocity * dt;
@@ -297,7 +297,7 @@ var sdkDemo = {
 	sx:0,
 	sy:0,
 	p_y:0,
-
+   smoothed_face:0,
 
     setup : function() {
 		
@@ -309,6 +309,7 @@ var sdkDemo = {
 	var current_pitch = state.kvHeadPitch;
 	var position_y=state.kvHeadY;
 	var z = state.kvHeadZ;
+	
 	
 	var x=current_roll;
 	var y=current_pitch;	
@@ -328,82 +329,59 @@ var sdkDemo = {
 	current_pitch=this.sy*10;
 	z=this.sz;
 	position_y=this.p_y;
-	console.log(z);
+	
+	//do we have face?
+	var face=state.kvValidationErrors;
+	var face_val=0;
+	
+	
+	if(face=="F")face_val=0;
+	else face_val=1;
+	var a=0.98;
+	var b=1-a;
+	this.smoothed_face=this.smoothed_face*a+face_val*b;
+	console.log(this.smoothed_face);
+	if(this.smoothed_face<0.28)//if no face, no movement
+	{
+	current_roll=0;
+	current_pitch=7;
+	z=3;
+	document.getElementById("noface").style.visibility="visible";
+	}
+	else{document.getElementById("noface").style.visibility="hidden";}
+	
 	//console.log(current_pitch);
-	if(current_roll<-2.3)
+	if(current_roll<-2.2)
 	{//turn left
 		turnLeft=false;
 		turnRight=true;
 	}
 	else turnRight=false;
-	if(current_roll>2.4)
+	if(current_roll>2.2)
 	{
 		turnLeft=true;
 		turnRight=false;
 	}
 	else turnLeft=false;
-	if(current_pitch>8.15)
+	if(current_pitch>8.1)
 	{
 		altitudeDown=true;
 		tiltDown = true;
 	}
 	else {tiltDown=false;altitudeDown=false;}
-	if(current_pitch<5.5)
+	if(current_pitch<6.7)
 	{
 		tiltUp = true;
 		altitudeUp=true;
 	}
 	else {tiltUp=false;altitudeUp=false;}
-	if(z<1.6)
+	if(z<2)
 	{
-		moveForward =1.5-z;
+		moveForward =1.8-z;
 	}
 	else moveForward=-1;
-	if(z>1.8)
-	{
-		moveBackward =1.5-z;
-	}
-	else moveBackward=-1;
-	
-	/*	if (event.keyCode == 33) {  // Altitude Up
-    altitudeUp = true;
-    event.returnValue = false;
-  } else if (event.keyCode == 34) {  // Altitude Down
-    altitudeDown = true;
-    event.returnValue = false;
-  } else if (event.keyCode == 37) {  // Turn Left.
-    turnLeft = true;
-    event.returnValue = false;
-  } else if (event.keyCode == 39) {  // Turn Right.
-    turnRight = true;
-    event.returnValue = false;
-  } else if (event.keyCode == 38) {  // Tilt Up.
-    tiltUp = true;
-    event.returnValue = false;
-  } else if (event.keyCode == 40) {  // Tilt Down.
-    tiltDown = true;
-    event.returnValue = false;
-  } else if (event.keyCode == 65 || 
-             event.keyCode == 97) {  // Strafe Left.
-    strafeLeft = true;
-    event.returnValue = false;
-  } else if (event.keyCode == 68 || 
-             event.keyCode == 100) {  // Strafe Right.
-    strafeRight = true;
-    event.returnValue = false;
-  } else if (event.keyCode == 87 || 
-             event.keyCode == 119) {  // Move Forward.
-    moveForward = true;    
-    event.returnValue = false;    
-  } else if (event.keyCode == 83 || 
-             event.keyCode == 115) {  // Move Forward.
-    moveBackward = true;     
-  } else {
-    return true;
-  }
-  return false;
-		
-		}*/
+
+
 
     },
 	
